@@ -1,4 +1,4 @@
-# 🔍 CodeLens — AI-Powered Code Review GPT Action
+# CodeLens — AI-Powered Code Review GPT Action
 
 <p align="center">
   <img src="https://img.shields.io/badge/FastAPI-0.110-009688?style=for-the-badge&logo=fastapi" />
@@ -10,23 +10,18 @@
 
 CodeLens is a production-grade GPT Action that lets ChatGPT users paste a GitHub PR URL or code snippet and receive structured, AI-powered code reviews with security flags, performance suggestions, and refactoring tips.
 
-## 🏗️ Architecture
+## Architecture
 
-```
-┌─────────────────┐     ┌──────────────────┐     ┌─────────────┐
-│   ChatGPT GPT   │────▶│  FastAPI Backend  │────▶│  GitHub API │
-│   Action / UI   │◀────│  (SSE Streaming)  │◀────│  (PR Diffs) │
-└─────────────────┘     └────────┬─────────┘     └─────────────┘
-                                 │
-                    ┌────────────┼────────────┐
-                    ▼            ▼            ▼
-              ┌──────────┐ ┌──────────┐ ┌──────────┐
-              │PostgreSQL│ │  Redis   │ │ GPT-4o   │
-              │ (Cache)  │ │(RateLimit│ │  (Review) │
-              └──────────┘ └──────────┘ └──────────┘
+```mermaid
+flowchart LR
+    A[ChatGPT GPT Action / UI] <--> B[FastAPI Backend<br/>SSE Streaming]
+    B <--> C[GitHub API<br/>PR Diffs]
+    B --> D[(PostgreSQL<br/>Cache)]
+    B --> E[(Redis<br/>Rate Limit)]
+    B --> F[GPT-4o<br/>Review]
 ```
 
-## ✨ Features
+## Features
 
 - **PR Review**: Paste any GitHub PR URL → get structured review with severity ratings
 - **Snippet Review**: Paste raw code → get instant feedback on security, performance, style
@@ -37,7 +32,7 @@ CodeLens is a production-grade GPT Action that lets ChatGPT users paste a GitHub
 - **Security**: Rate limiting, input sanitization, CORS, API key rotation
 - **Observability**: Prometheus metrics, structured logging, Grafana dashboard
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Docker & Docker Compose
@@ -70,7 +65,7 @@ cd backend && pytest --cov=app --cov-report=term-missing -v
 cd frontend && npm test
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 codelens/
@@ -116,14 +111,14 @@ codelens/
 └── .env.example
 ```
 
-## 🔌 GPT Action Setup
+## GPT Action Setup
 
 1. Go to [GPT Builder](https://chat.openai.com/gpts/editor)
 2. Create new GPT → Actions → Import from URL
 3. Enter: `https://your-domain.com/openapi.yaml`
 4. Test: "Review this PR: https://github.com/owner/repo/pull/123"
 
-## 📊 API Endpoints
+## API Endpoints
 
 | Method | Path | Description |
 |--------|------|-------------|
@@ -133,7 +128,7 @@ codelens/
 | `GET`  | `/health` | Health check |
 | `GET`  | `/metrics` | Prometheus metrics |
 
-## 🛡️ Security
+## Security
 
 - Rate limiting: 10 reviews/hr per IP (Redis + slowapi)
 - Input validation: GitHub URL regex enforcement
@@ -142,7 +137,7 @@ codelens/
 - SQL injection prevention via parameterized queries
 - Request tracing with unique IDs
 
-## 📈 Observability
+## Observability
 
 - Structured JSON logging with trace IDs
 - Prometheus metrics: `review_latency_seconds`, `review_count_total`, `cache_hit_ratio`
